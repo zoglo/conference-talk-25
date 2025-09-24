@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Contao - wie geht es heute?</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/black.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+
+  <div class="reveal">
+    <div class="slides">
+      <section data-transition="fade">
+        <section data-transition="fade">
+          <h1>Contao - wie geht es heute?</h1>
+          <p>Ein Leitfaden für moderne Best Practices in der Contao-Erweiterungsentwicklung</p>
+
+          <aside class="notes">
+            <ul>
+              <li>Reise eines Refactoring inklusive Teilmodernisierung von zwei verwaisten Contao 3 Modulen</li>
+              <li>Vortrag richtet sich an Entwickler oder solche, die es gerne werden möchten</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Sebastian Zoglowek</h2>
+          <ul>
+            <li>Nickname: zoglo</li>
+            <li>Fullstack-Entwickler</li>
+            <li>Erste Eindrücke seit Contao 4.8 (2019)</li>
+            <li>Contao Core-Entwickler seit Februar 2025</li>
+            <li>The dark mode guy</li>
+            <li>Oveleon GbR</li>
+          </ul>
+
+          <aside class="notes">
+            <ul>
+              <li>Programmierung erst seit 2021, vorher CSS</li>
+              <li>Konferenz '23 Startschuss für Contributions in Contao</li>
+              <li>Seit Ende 2023 vermehrt Contributions</li>
+              <li>Bekannt für Dark-Mode in der Doku und im Manager</li>
+              <li>Bekannt für Dark-Mode in der Doku und im Manager</li>
+            </ul>
+          </aside>
+        </section>
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+      <section data-transition="fade">
+        <h2>Agenda</h2>
+        <ol>
+          <li>Warum überhaupt?</li>
+          <li>Service Container anstatt $GLOBALS
+            <ul>
+              <li>Service Tagging in Contao</li>
+            </ul>
+          </li>
+          <li>Events statt Hooks</li>
+          <li>Permissions mit Votern</li>
+          <li>Rector (und weitere Tools)</li>
+          <li style="opacity: .7"><span >Rector Regeln schreiben</span></li>
+        </ol>
+
+        <aside class="notes">
+          <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </aside>
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+      <section data-transition="fade">
+        <section data-transition="fade">
+          <h2>Warum?</h2>
+          <ul>
+            <li>Symfony seit Contao 4 und seit Jahren etabliert</li>
+            <li>Das Rad nicht neu erfinden</li>
+            <li>Standards nutzen</li>
+          </ul>
+
+          <aside class="notes">
+            <ul>
+              <li>Wer liest Release Notes</li>
+              <li>Wer verfolgt alle Pull Requests auf GitHub?</li>
+              <li>Wer schaut sich alle neuen Features in PHP und Symfony an?</li>
+              <li>Wer hat noch eigene alte Erweiterungen in system/modules</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Das News-Bundle</h2>
+
+          <pre><code class="php" data-trim>
+class ModuleNewsReader extends ModuleNews
+{
+
+  public function generate()
+	{
+		if (TL_MODE == 'BE')
+		{
+			$objTemplate = new BackendTemplate('be_wildcard');
+
+			$objTemplate->wildcard = '### NEWS READER ###';
+			$objTemplate->title = $this->headline;
+			$objTemplate->id = $this->id;
+			$objTemplate->link = $this->name;
+			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+
+			return $objTemplate->parse();
+		}
+
+		// Return if no news item has been specified
+		if (!$this->Input->get('items'))
+		{
+			return '';
+		}
+
+		$this->news_archives = $this->sortOutProtected(deserialize($this->news_archives));
+
+		// Return if there are no archives
+		if (!is_array($this->news_archives) || count($this->news_archives) < 1)
+		{
+			return '';
+		}
+
+		return parent::generate();
+	}
+</code></pre>
+
+          <aside class="notes">
+            <ul>
+              <li>Core-Devs sagen immer: Schau es dir am Core ab</li>
+              <li>Selber am News-Bundle gelernt</li>
+              <li>Schönes Beispiel um Liste und Detail-Seite darzustellen</li>
+              <li>Das Code-Beispiel ist von 2008...</li>
+            </ul>
+          </aside>
+
+        </section>
+
+        <section data-transition="fade">
+          <h2>Das News-Bundle (als schlechtes Beispiel)</h2>
+
+          <img src="/images/news-bundle.png" alt="News-Bundle Commit 2008" style="width: 100%">
+
+          <a href="https://github.com/contao/core/commit/4a2809d34ce08193c26b1c5815ecad2c1cdb909b">Der erste commit</a>
+
+          <aside class="notes">
+            <ul>
+              <li>News Bundle ist veraltet - Die Leute von Contao machen es ja gut</li>
+              <li>Ende 2021 habe ich gelernt, wie man Code von 2008 schreibt</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Best Practices - seit 2016</h2>
+
+          <div style="margin-bottom: 1em">
+            <strong>2016 - Contao 4 Extension Development</strong>
+            <p>(David Greminger)</p>
+            <p><a href="https://www.youtube.com/watch?v=hrFnud6CtLg" target="_blank" title="Contao 4 Extension Development - Contao Konferenz 2016">Video zum Konferenzvortrag</a></p>
+          </div>
+          <div style="margin-bottom: 1em">
+            <strong>2017 - Extension from scratch in Contao 4</strong>
+            <p>(Christian Schiffler)</p>
+            <p><a href="https://www.youtube.com/watch?v=hrFnud6CtLg" target="_blank" title="Contao 4 Extension Development - Contao Konferenz 2016">Video zum Konferenzvortrag</a></p>
+          </div>
+
+          <aside class="notes">
+            <ul>
+              <li>Best practices gibt es seit 2016 - Symfony</li>
+            </ul>
+          </aside>
+        </section>
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+      <section data-transition="fade">
+        <section data-transition="fade">
+          <h2>Zwei verwaiste Plugins als Beispiel</h2>
+        </section>
+        <section data-transition="fade">
+
+          <img src="/images/graveyard.png" alt="Image graveyard with two plugins" style="width: 100%">
+
+          <aside class="notes">
+            <ul>
+              <li>Zwei verwaiste Plugins</li>
+              <li>Wiederbeleben</li>
+            </ul>
+          </aside>
+        </section>
+        <section data-transition="fade">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr)">
+            <p>Stylepicker4ward</p>
+            <p>dlh_googlemaps</p>
+            <img src="/images/extensions/stylepicker_before.png" alt="Stylepicker before" style="width: 100%">
+            <img src="/images/extensions/maps_before.png" alt="Maps before" style="width: 100%">
+          </div>
+          <p>Manual installation: copy all files to system/modules/</p>
+          <aside class="notes">
+            <ul>
+              <li>Geforked - Sind noch Contao 3 Module</li>
+            </ul>
+          </aside>
+        </section>
+        <section data-transition="fade">
+          <h3>Step 1</h3>
+          <h4>Blind umschreiben in ein Contao-Manager-Bundle</h4>
+        </section>
+        <section data-transition="fade">
+          <h3>Step 2</h3>
+          <h4>Slap Rector on top of it</h4>
+        </section>
+        <section data-transition="fade">
+          <h3>Wait for it</h3>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center">
+            <img src="/images/waiting.webp" alt="Person waiting" style="width: 100%">
+            <img src="/images/rector-change.png" alt="Rector console" style="width: 100%">
+          </div>
+        </section>
+        <section data-transition="fade">
+          <h3>Zack feddig</h3>
+          <h3>"Re(fa)ctored"</h3>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr)">
+            <p>Stylepicker4ward</p>
+            <p>dlh_googlemaps</p>
+            <img src="/images/extensions/stylepicker_after.png" alt="Stylepicker after" style="width: 100%">
+            <img src="/images/extensions/maps_after.png" alt="Stylepicker after" style="width: 100%">
+          </div>
+        </section>
+        <section data-transition="fade">
+          <h3>Vortrag zu Ende... ?</h3>
+        </section>
+        <section data-transition="fade">
+          <img src="/images/must_refactor.jpeg" alt="Must refactor" style="width: 68vh">
+        </section>
+
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+      <section data-transition="fade">
+        <section data-transition="fade">
+          <h2>Service Container anstatt $GLOBALS</h2>
+        </section>
+
+        <section data-transition="fade">
+          <h2>$GLOBALS</h2>
+          <p>Teil der Superglobals - Interne Variablen, die überall verfügbar sind</p>
+          <p>Assoziatives Array, das Referenzen auf alle Variablen enthält</p>
+          <aside class="notes">
+            <ul>
+              <li>Das GLOBALS Array wurde für so ziemlich alles genutzt (Hooks, Cron, Elementregistrierung, etc.)</li>
+              <li>Unstrukturiertes Array und Ladereihenfolge ist wichtig</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Service Container</h2>
+          <p>Ein PHP-Objekt, welches für die Instanziierung von Objekten bzw. Services zuständig ist.</p>
+          <p>Es weiß über seine Abhängigkeiten Bescheid, da alles (vor-)konfiguriert</p>
+          <p style="font-size: small"><a href="https://symfony.com/doc/current/components/dependency_injection.html">https://symfony.com/doc/current/components/dependency_injection.html</a></p>
+          <aside class="notes">
+            <ul>
+              <li>Service Container steht immer bereit</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Services</h2>
+          <ul>
+            <li>PHP Objekte</li>
+            <li>Stateless</li>
+            <li>Sollen austauschbar sein</li>
+            <li>Werden konfiguriert in der "services.yaml"</li>
+            <li>Per Default nur eine Instanz / Singleton</li>
+            <li>Kann man testen</li>
+          </ul>
+          <aside class="notes">
+            <ul>
+              <li>Arbeiterklassen wie Ameisen</li>
+              <li>Bestes Beispiel ist immer der Mailer Service, er soll eine E-Mail versenden</li>
+              <li>Stateless (gleiche Eingabe -> gleiche Ausgabe)</li>
+              <li>Singleton Pattern: Soll nicht mehrfach aufgerufen werden</li>
+              <li>shared: false, damit es kein Singleton ist</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Database::getInstance()</h2>
+          <pre><code class="php">
+class Database
+{
+  protected function __construct()
+	{
+		$this->resConnection = System::getContainer()->get('database_connection');
+
+		if (!\is_object($this->resConnection)) {
+			throw new \Exception(\sprintf('Could not connect to database (%s)', $this->error));
+		}
+	}
+
+  public static function getInstance()
+  {
+    return static::$objInstance ??= new static();
+  }
+          </code></pre>
+
+
+          <aside class="notes">
+            <ul>
+              <li>Wir holen uns immer dieselbe Datenbankinstanz</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Vorher</h2>
+          <pre><code class="php">
+$objContent = Database::getInstance()
+  ->prepare('SELECT type,pid FROM tl_content WHERE id=?')
+  ->execute($id)
+;
+
+$id = $objContent->pid;
+$cond = $objContent->type;
+          </code></pre>
+
+          <aside class="notes">
+            <ul>
+              <li>Wir holen uns immer dieselbe Datenbankinstanz</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Nachher</h2>
+          <pre><code class="php">
+class StylePickerController extends AbstractBackendController
+{
+  public function __construct(
+    private readonly Connection $connection // Datenbank Service
+  ) {}
+
+  // ...
+  $objContent = $this->connection->fetchAssociative(
+    'SELECT type, pid FROM tl_content WHERE id = ?', [$id]
+  );
+
+  $id = $objContent['pid'] ?? null;
+  $condition = $objContent['type'] ?? null;
+        </code></pre>
+
+          <aside class="notes">
+            <ul>
+              <li>Der Service ist austauschbar</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Service-Tagging</h2>
+          <p>Anhand des Beispiels eines Content-Elements</p>
+        </section>
+        <section data-transition="fade">
+          <p>Services müssen in der services.yaml definiert werden</p>
+          <pre><code class="yaml">
+services:
+    _defaults:
+        autoconfigure: true
+        #autowire: true
+
+    ContaoGraveyard\GoogleMapsBundle\Controller\ContentElement\GoogleMapsController:
+        tags:
+            -
+                type: dlh_googlemaps
+                name: contao.content_element
+                category: media
+                template: ce_dlh_googlemaps_default
+        </code></pre>
+        </section>
+
+
+
+
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+      <section data-transition="fade">
+        <section data-transition="fade">
+          <h2>Rector (und andere Tools)</h2>
+          <aside class="notes">
+            <ul>
+              <li>Rector alleine reicht nicht aus</li>
+              <li>Nutzung von ECS und Rector</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Vorbereitungen</h3>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Übersicht</h3>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Meldet Fehler</th>
+                <th>Fixed Fehler</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Coding standard</th>
+                <td>PHP_Codesniffer</td>
+                <td>PHP-CS-Fixer, ECS</td>
+              </tr>
+              <tr>
+                <th>Logik</th>
+                <th>PHPStan, Psalm</th>
+                <th>Rector</th>
+              </tr>
+            </tbody>
+          </table>
+
+          <aside class="notes">
+            <ul>
+              <li>Rector von Tomas Votruba</li>
+              <li>Rector erkennt Logik und behebt diese Fehler auch</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h4>Coding Standard</h4>
+          <p>Modifiziert Code und ist Token-Basiert (Lexing und Tokenisierung)</p>
+          <p>PHPToken oder `token_get_all`</p>
+
+          <pre><code class="php">
+$source = <<<'code'
+<?php
+
+class A
+{
+    const PUBLIC = 1;
+}
+code;
+
+$tokens = token_get_all($source, TOKEN_PARSE);
+
+foreach ($tokens as $token) {
+    if (is_array($token)) {
+        echo token_name($token[0]) , PHP_EOL;
+    }
+}
+?>
+          </code></pre>
+
+        </section>
+        <section data-transition="fade">
+                    <pre><code>
+T_OPEN_TAG
+T_WHITESPACE
+T_CLASS
+T_WHITESPACE
+T_STRING
+T_CONST
+T_WHITESPACE
+T_STRING
+T_LNUMBER
+          </code></pre>
+        </section>
+        <section data-transition="fade">
+
+          <h4>Static analyzers</h4>
+          <p>Basierend auf dem AST (Abstract Syntax Tree) -> Seit PHP 7</p>
+          <p>Geparsed über PHPStan (Nikita Popov / nikic)</p>
+
+          <pre><code class="php">
+            return $this->foo && self::bar();```
+          </code></pre>
+          <pre><code class="php">
+PhpParser\Node\Stmt\Return_
+└─ expr: PhpParser\Node\Expr\BinaryOp\BooleanAnd
+   ├─ left:  PhpParser\Node\Expr\PropertyFetch
+   |         ├─ var:  PhpParser\Node\Expr\Variable
+   |         └─ name: PhpParser\Node\Identifier
+   └─ right: PhpParser\Node\Expr\StaticCall
+             ├─ class: PhpParser\Node\Name
+             ├─ name:  PhpParser\Node\Identifier
+             └─ args:  array()
+          </code></pre>
+
+        </section>
+
+        <section data-transition="fade">
+
+          <h4>Instant Upgrade Tools</h4>
+          <p>RectorPHP</p>
+        </section>
+
+        <section data-transition="fade">
+          <pre><code class="php">
+class Foo extends \Controller
+{
+    public function bar()
+    {
+        $GLOBALS['TL_DCA']['tl_content']['palettes']['foo'] = '{foo_legend},foo;{bar_legend:hide},bar;{baz_legend:hide},baz';
+    }
+}
+          </code></pre>
+
+        </section>
+
+        <section data-transition="fade">
+          <img src="/images/ast_dca.png" alt="Abstract Syntax Tree of a DCA" style="width: 100%">
+          <a href="https://getrector.com/ast/9e097952b5402901fe0b3d4dc769b3337265818e">Beispiel</a>
+        </section>
+
+        <section data-transition="fade">
+          <img src="/images/contao-rector.png" alt="Contao-Rector" style="width: 100%">
+          <a href="https://getrector.com/ast/9e097952b5402901fe0b3d4dc769b3337265818e">Beispiel</a>
+
+          <aside class="notes">
+            <ul>
+              <li>Jemand war faul und wollte nicht immer dasselbe wiederholen</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h3>rector.php</h3>
+          <pre><code class="php" style="font-size: .8em; line-height: 1;">
+
+return RectorConfig::configure()
+    ->withPhpSets(
+        php83: true,
+    )
+    ->withAttributesSets(
+        symfony: true,
+        doctrine: true,
+    )
+    ->withSets([
+        ContaoLevelSetList::UP_TO_CONTAO_53,
+        ContaoSetList::ANNOTATIONS_TO_ATTRIBUTES,
+    ])
+    ->withPaths([
+        __DIR__ . '/contao',
+        __DIR__ . '/src',
+    ])
+    ->withImportNames(removeUnusedImports: true)
+    ->withParallel()
+;
+          </code></pre>
+        </section>
+
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+
+
+    </div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
