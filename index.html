@@ -216,7 +216,22 @@ class ModuleNewsReader extends ModuleNews
         </section>
 
         <section data-transition="fade">
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr)">
+
+          <h2>Verfügbar? <br> Klar!</h2>
+
+          <p><a href="https://github.com/contao-graveyard/stylepicker" target="_blank">https://github.com/contao-graveyard/stylepicker</a></p>
+          <p><a href="https://github.com/contao-graveyard/googlemaps" target="_blank">https://github.com/contao-graveyard/googlemaps</a></p>
+
+          <aside class="notes">
+            <ul>
+              <li>Verfügbar auf GitHub</li>
+              <li>Bald auf Packagist (in Version 0.1), gerne contributen</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center">
             <p>Stylepicker4ward</p>
             <p>dlh_googlemaps</p>
             <img src="images/extensions/stylepicker_before.png" alt="Stylepicker before" style="width: 100%">
@@ -251,7 +266,7 @@ class ModuleNewsReader extends ModuleNews
         <section data-transition="fade">
           <h3>Zack feddig</h3>
           <h3>"Re(fa)ctored"</h3>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr)">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center">
             <p>Stylepicker4ward</p>
             <p>dlh_googlemaps</p>
             <img src="images/extensions/stylepicker_after.png" alt="Stylepicker after" style="width: 100%">
@@ -554,7 +569,6 @@ services:
 
         <section data-transition="fade">
           <p>Warum?</p>
-          <p>Aus Legacygründen hat man immer alle Berechtigungen, wir nutzen nun aber fast überall Voter</p>
           <ul>
             <li>Legacygründe: man hat immer alle Berechtigungen</li>
             <li>Und verweigert danach</li>
@@ -590,6 +604,9 @@ public function __construct()
           </code></pre>
         </section>
 
+        <section data-transition="fade">
+          <p>onLoadCallback!</p>
+        </section>
 
         <section data-transition="fade">
           <pre class="stretch"><code class="php">
@@ -774,11 +791,12 @@ class GoogleMapsAccessVoter extends AbstractDataContainerVoter
     ],
 ],
           </code></pre>
-          <p>* Seit Contao 5.5 kann man die dies für Defaults sogar weglassen</p>
+          <p>* Seit Contao 5.5 kann man die Defaults auch weglassen</p>
         </section>
 
         <section data-transition="fade">
-          <p>Kaum löscht man paar Zeilen</p>
+          <p>Kaum löscht man paar Zeilen Code</p>
+          <p>Hat man das Feature implementiert</p>
           <img src="images/permissions/permissions_correct.png" alt="Operations with greyed out permissions" style="width: 100%">
         </section>
 
@@ -803,7 +821,7 @@ class GoogleMapsAccessVoter extends AbstractDataContainerVoter
           <ul>
             <li>Hooks greifen auf Globals zu (deprecated)</li>
             <li>... ich, Ich, ICH! ICH MUSS ZUERST! (Priority)</li>
-            <li>Events kannst du decoraten!</li>
+            <li>Events kannst du "decoraten"! (überschreiben)</li>
             <li>Events sind Objekte</li>
           </ul>
           <aside class="notes">
@@ -931,7 +949,7 @@ class StylePickerEventListener
           <p>Modifiziert Code und ist Token-Basiert (Lexing und Tokenisierung)</p>
           <p>PHPToken oder `token_get_all`</p>
 
-          <pre><code class="php">
+          <pre class="stretch"><code class="php">
 $source = <<<'code'
 <?php
 
@@ -971,7 +989,7 @@ T_LNUMBER
 
           <h4>Static analyzers</h4>
           <p>Basierend auf dem AST (Abstract Syntax Tree) -> Seit PHP 7</p>
-          <p>Geparsed über PHPStan (Nikita Popov / nikic)</p>
+          <p>Geparsed über PHPStan <br><sup>(by Nikita Popov / nikic)</sup></p>
 
           <pre><code class="php">
             return $this->foo && self::bar();```
@@ -992,7 +1010,7 @@ PhpParser\Node\Stmt\Return_
 
         <section data-transition="fade">
           <h4>Instant Upgrade Tools</h4>
-          <p>RectorPHP</p>
+          <p>RectorPHP <br><sup>(by Tomas Votruba)</sup></p>
         </section>
 
         <section data-transition="fade">
