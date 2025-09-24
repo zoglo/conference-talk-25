@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Ein Leitfaden für moderne Best Practices in der Contao-Erweiterungsentwicklung">
 
 		<title>Contao - wie geht es heute?</title>
 
@@ -17,14 +18,16 @@
 
   <div class="reveal">
     <div class="slides">
-      <section data-transition="fade">
+
+      <section id="welcome" data-transition="fade">
+
         <section data-transition="fade">
           <h1>Contao - wie geht es heute?</h1>
-          <p>Ein Leitfaden für moderne Best Practices in der Contao-Erweiterungsentwicklung</p>
+          <p style="font-size: smaller">Ein Leitfaden für moderne Best Practices in der Anpassung der Applikationen und der Contao-Erweiterungsentwicklung</p>
 
           <aside class="notes">
             <ul>
-              <li>Reise eines Refactoring inklusive Teilmodernisierung von zwei verwaisten Contao 3 Modulen</li>
+              <li>Reise eines Refactorings inklusive Teilmodernisierung von zwei verwaisten Contao 3 Modulen</li>
               <li>Vortrag richtet sich an Entwickler oder solche, die es gerne werden möchten</li>
             </ul>
           </aside>
@@ -33,12 +36,12 @@
         <section data-transition="fade">
           <h2>Sebastian Zoglowek</h2>
           <ul>
-            <li>Nickname: zoglo</li>
+            <li>Nickname: zoglo (GitHub, Forum, Slack, überall)</li>
             <li>Fullstack-Entwickler</li>
             <li>Erste Eindrücke seit Contao 4.8 (2019)</li>
             <li>Contao Core-Entwickler seit Februar 2025</li>
-            <li>The dark mode guy</li>
             <li>Oveleon GbR</li>
+            <li>#Darkmode</li>
           </ul>
 
           <aside class="notes">
@@ -51,11 +54,12 @@
             </ul>
           </aside>
         </section>
+
       </section>
 
       <!-- ------------------------------------------------------------------------------------------------------- -->
 
-      <section data-transition="fade">
+      <section id="agenda" data-transition="fade">
         <h2>Agenda</h2>
         <ol>
           <li>Warum überhaupt?</li>
@@ -64,8 +68,8 @@
               <li>Service Tagging in Contao</li>
             </ul>
           </li>
-          <li>Events statt Hooks</li>
           <li>Permissions mit Votern</li>
+          <li>Events statt Hooks</li>
           <li>Rector (und weitere Tools)</li>
           <li style="opacity: .7"><span >Rector Regeln schreiben</span></li>
         </ol>
@@ -83,7 +87,8 @@
 
       <!-- ------------------------------------------------------------------------------------------------------- -->
 
-      <section data-transition="fade">
+      <section id="why" data-transition="fade">
+
         <section data-transition="fade">
           <h2>Warum?</h2>
           <ul>
@@ -150,7 +155,6 @@ class ModuleNewsReader extends ModuleNews
               <li>Das Code-Beispiel ist von 2008...</li>
             </ul>
           </aside>
-
         </section>
 
         <section data-transition="fade">
@@ -188,14 +192,17 @@ class ModuleNewsReader extends ModuleNews
             </ul>
           </aside>
         </section>
+
       </section>
 
       <!-- ------------------------------------------------------------------------------------------------------- -->
 
-      <section data-transition="fade">
+      <section id="revival" data-transition="fade">
+
         <section data-transition="fade">
           <h2>Zwei verwaiste Plugins als Beispiel</h2>
         </section>
+
         <section data-transition="fade">
 
           <img src="images/graveyard.png" alt="Image graveyard with two plugins" style="width: 100%">
@@ -207,6 +214,7 @@ class ModuleNewsReader extends ModuleNews
             </ul>
           </aside>
         </section>
+
         <section data-transition="fade">
           <div style="display: grid; grid-template-columns: repeat(2, 1fr)">
             <p>Stylepicker4ward</p>
@@ -221,14 +229,17 @@ class ModuleNewsReader extends ModuleNews
             </ul>
           </aside>
         </section>
+
         <section data-transition="fade">
           <h3>Step 1</h3>
           <h4>Blind umschreiben in ein Contao-Manager-Bundle</h4>
         </section>
+
         <section data-transition="fade">
           <h3>Step 2</h3>
           <h4>Slap Rector on top of it</h4>
         </section>
+
         <section data-transition="fade">
           <h3>Wait for it</h3>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center">
@@ -236,6 +247,7 @@ class ModuleNewsReader extends ModuleNews
             <img src="images/rector-change.png" alt="Rector console" style="width: 100%">
           </div>
         </section>
+
         <section data-transition="fade">
           <h3>Zack feddig</h3>
           <h3>"Re(fa)ctored"</h3>
@@ -246,9 +258,11 @@ class ModuleNewsReader extends ModuleNews
             <img src="images/extensions/maps_after.png" alt="Stylepicker after" style="width: 100%">
           </div>
         </section>
+
         <section data-transition="fade">
           <h3>Vortrag zu Ende... ?</h3>
         </section>
+
         <section data-transition="fade">
           <img src="images/must_refactor.jpeg" alt="Must refactor" style="width: 68vh">
         </section>
@@ -257,14 +271,15 @@ class ModuleNewsReader extends ModuleNews
 
       <!-- ------------------------------------------------------------------------------------------------------- -->
 
-      <section data-transition="fade">
+      <section id="service_container" data-transition="fade">
+
         <section data-transition="fade">
           <h2>Service Container anstatt $GLOBALS</h2>
         </section>
 
         <section data-transition="fade">
           <h2>$GLOBALS</h2>
-          <p>Teil der Superglobals - Interne Variablen, die überall verfügbar sind</p>
+          <p>Teil der Superglobals - interne Variablen, die überall verfügbar sind</p>
           <p>Assoziatives Array, das Referenzen auf alle Variablen enthält</p>
           <aside class="notes">
             <ul>
@@ -379,17 +394,38 @@ class StylePickerController extends AbstractBackendController
           </aside>
         </section>
 
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+      <section id="contao_attribute_tagging" data-transition="fade">
+
         <section data-transition="fade">
           <h2>Service-Tagging</h2>
-          <p>Anhand des Beispiels eines Content-Elements</p>
+          <p>und wie das Contao CMS es für Entwickler vereinfacht</p>
         </section>
+
+        <section data-transition="fade">
+          <h3>Beispiel eines Content-Elements</h3>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Warum sollte ich meine Inhaltselemente umschreiben?</h3>
+          <ul>
+            <li>Fragment Controller</li>
+            <li>Seit Symfony 2.2 (aber auch in 2.0)</li>
+            <li>Fragmente = Schnipsel</li>
+            <li>Caching von Schnipseln auf der Page (ESI)</li>
+            <li>Mit Twig viel mehr möglich :)</li>
+          </ul>
+        </section>
+
         <section data-transition="fade">
           <p>Services müssen in der services.yaml definiert werden</p>
-          <pre><code class="yaml">
+          <pre style="width: 100%"><code class="yaml">
 services:
     _defaults:
         autoconfigure: true
-        #autowire: true
 
     ContaoGraveyard\GoogleMapsBundle\Controller\ContentElement\GoogleMapsController:
         tags:
@@ -399,16 +435,455 @@ services:
                 category: media
                 template: ce_dlh_googlemaps_default
         </code></pre>
+          <aside class="notes">
+            <ul>
+              <li>Opt-In, komme ich gleich zu (Autowiring)</li>
+            </ul>
+          </aside>
         </section>
 
+        <section data-transition="fade">
+          <h2>Geht das nicht einfacher?</h2>
+        </section>
 
+        <section data-transition="fade">
+          <h2>Attributes!</h2>
+          <p>(früher auch über Annotations)</p>
+          <ul style="display: flex; flex-wrap: wrap; list-style: none; gap: 1rem; justify-content: center">
+            <li style="padding: 5px; border: 1px solid">AsFrontendModule</li>
+            <li style="padding: 5px; border: 1px solid">AsContentElement</li>
+            <li style="padding: 5px; border: 1px solid">AsPage</li>
+            <li style="padding: 5px; border: 1px solid">AsPickerProvider</li>
+            <li style="padding: 5px; border: 1px solid">AsCronJob</li>
+            <li style="padding: 5px; border: 1px solid">AsHook</li>
+            <li style="padding: 5px; border: 1px solid">AsInsertTag</li>
+            <li style="padding: 5px; border: 1px solid">AsBlockInsertTag</li>
+            <li style="padding: 5px; border: 1px solid">AsInsertTagFlag</li>
+            <li style="padding: 5px; border: 1px solid">AsCallback</li>
+          </ul>
+          <aside class="notes">
+            <ul>
+              <li>Contao stellt Attribute bereit, welche dir die Services taggen</li>
+              <li>Die fügst du lediglich in deinem Controller hizu</li>
+              <li>Technisch geht es zu sehr ins Detail aber Contao konfiguriert diese für dich im Service Container</li>
+            </ul>
+          </aside>
+        </section>
 
+        <section data-transition="fade">
+          <h3 style="text-transform: initial">#[AsContentElement]</h3>
+          <pre><code class="php">
+#[AsContentElement(
+    type: 'dlh_googlemaps',
+    category: 'media',
+    template: 'ce_dlh_googlemaps_default',
+)]
+class GoogleMapsController extends AbstractContentElementController
+{
+          </code></pre>
+        </section>
+
+        <section data-transition="fade">
+          <p>Und nun?</p>
+          <pre style="width: 100%"><code class="yaml">
+services:
+    _defaults:
+        autoconfigure: true
+
+    #ContaoGraveyard\GoogleMapsBundle\Controller\ContentElement\GoogleMapsController: ~
+    ...ContentElement\GoogleMapsController: ~
+
+    # Yes, it's invalid, I know
+          </code></pre>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Aber was ist mit Autowiring!?</h3>
+          <img src="images/service/autowiring.png" alt="Man looking at autowire being nice" style="height: 50vh">
+
+        </section>
+
+        <section data-transition="fade">
+          <p>Klar, kannst du machen!</p>
+          <pre class="stretch"><code class="yaml">
+services:
+    _defaults:
+        autoconfigure: true
+        autowire: true
+
+    ContaoGraveyard\GoogleMapsBundle\:
+        resource: '../src/'
+        exclude: '../src/{Event,Model,Whatever.php}'
+          </code></pre>
+
+        </section>
+
+        <section data-transition="fade">
+          <h3>Aber nicht in public bundles!</h3>
+          <p>Mr. Codestyle wants to talk to you</p>
+          <img src="images/service/autowire_you_must_not.png" alt="Leo not allowing autowiring" style="height: 50vh">
+        </section>
+
+        <section data-transition="fade">
+          <p>Public Bundles kennen die Services in deinem Container nicht (in der Theorie)</p>
+          <p>In der App hat man Kontrolle über alles</p>
+          <aside class="notes">
+            <ul>
+              <li>Der Service Container kann von jedem konfiguriert werden</li>
+              <li>Services könnten sich ändern</li>
+              <li>Dein Bundle soll es speziell konfigurieren :)</li>
+            </ul>
+          </aside>
+        </section>
 
       </section>
 
       <!-- ------------------------------------------------------------------------------------------------------- -->
 
-      <section data-transition="fade">
+      <section id="permissions" data-transition="fade">
+
+        <section data-transition="fade">
+          <h2>Permissions und Voter</h2>
+          <aside class="notes">
+            <ul>
+              <li>Was bringt Contao mit?</li>
+              <li>Warum auf Voter setzen?</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <p>Warum?</p>
+          <p>Aus Legacygründen hat man immer alle Berechtigungen, wir nutzen nun aber fast überall Voter</p>
+          <ul>
+            <li>Legacygründe: man hat immer alle Berechtigungen</li>
+            <li>Und verweigert danach</li>
+            <li>Nicht mehr selber Berechtigungen schreiben</li>
+            <li>Lass es das Framework machen</li>
+            <li>C R U D</li>
+          </ul>
+        </section>
+
+        <section data-transition="fade">
+          <h2>Wie ging es damals?</h2>
+          <p>DO NOT CHANGE THIS ORDER!</p>
+          <pre class="stretch"><code class="php">
+/**
+ * Initialize the controller.
+ *
+ * 1. Import user
+ * 2. Call parent constructor
+ * 3. Authenticate user
+ * 4. Load language files
+ * DO NOT CHANGE THIS ORDER!
+ */
+public function __construct()
+{
+    $this->import(BackendUser::class, 'User');
+    $this->import('Database');
+
+    $this->User->authenticate();
+
+    $this->loadLanguageFile('default');
+    $this->loadLanguageFile('modules');
+}
+          </code></pre>
+        </section>
+
+
+        <section data-transition="fade">
+          <pre class="stretch"><code class="php">
+$GLOBALS['TL_DCA']['tl_dlh_googlemaps'] = [
+    'config' => [
+        // ...
+        'onload_callback' => [
+            ['tl_dlh_googlemaps', 'checkPermission'],
+        ],
+    ],
+    //...
+
+public function checkPermission(): void
+{
+    if ($this->User->isAdmin) {
+        return;
+    }
+    // Set root IDs
+    if (!is_array($this->User->dlh_googlemapss) || $this->User->dlh_googlemapss === []) {
+        $root = [0];
+    } else {
+        $root = $this->User->dlh_googlemapss;
+    }
+    $GLOBALS['TL_DCA']['tl_dlh_googlemaps']['list']['sorting']['root'] = $root;
+    // Check permissions to add Maps
+    if (!$this->User->hasAccess('create', 'dlh_googlemapsp')) {
+        $GLOBALS['TL_DCA']['tl_dlh_googlemaps']['config']['closed'] = \true;
+    }
+          </code></pre>
+        </section>
+        <section data-transition="fade">
+          <pre class="stretch"><code class="php">
+// Check current action
+switch (Input::get('act')) {
+    case 'create':
+    case 'select':
+        // Allow
+        break;
+          </code></pre>
+        </section>
+
+        <section data-transition="fade">
+          <pre class="stretch"><code class="php">
+    case 'edit':
+        // Dynamically add the record to the user profile
+        if (!in_array(Input::get('id'), $root, true)) {
+            $arrNew = $this->Session->get('new_records');
+            if (is_array($arrNew['tl_dlh_googlemaps']) && in_array(Input::get('id'), $arrNew['tl_dlh_googlemaps'], true)) {
+                // Viel Code um Berechtigungen auf Gruppenepene upzudaten
+                // ...
+            }
+        }
+        // no break;
+    case 'copy':
+    case 'delete':
+    case 'show':
+        if (!in_array(Input::get('id'), $root, true) || (Input::get('act') === 'delete' && !$this->User->hasAccess('delete', 'dlh_googlemapsp'))) {
+            System::getContainer()->get('monolog.logger.contao')->log(
+                LogLevel::ERROR,
+                'Not enough permissions to ' . Input::get('act') . ' Map ID "' . Input::get('id') . '"',
+                [
+                    'contao' => new ContaoContext(__METHOD__, ContaoContext::ERROR),
+                ],
+            );
+            $this->redirect('contao/main.php?act=error');
+        }
+        break;
+          </code></pre>
+        </section>
+
+        <section data-transition="fade">
+          <pre class="stretch"><code class="php">
+case 'editAll':
+    case 'deleteAll':
+    case 'overrideAll':
+        $session = $this->Session->getData();
+        if (Input::get('act') === 'deleteAll' && !$this->User->hasAccess('delete', 'dlh_googlemapsp')) {
+            $session['CURRENT']['IDS'] = [];
+        } else {
+            $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
+        }
+        $this->Session->setData($session);
+        break;
+
+    default:
+        if ((string) Input::get('act') !== '') {
+            System::getContainer()->get('monolog.logger.contao')->log(
+                LogLevel::ERROR,
+                'Not enough permissions to ' . Input::get('act') . ' Maps',
+                [
+                    'contao' => new ContaoContext(__METHOD__, ContaoContext::ERROR),
+                ],
+            );
+            $this->redirect('contao/main.php?act=error');
+        }
+        break;
+}
+          </code></pre>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Voters</h3>
+          <p>This feature is available in Contao <strong style="color: #f47c00;">4.7</strong> and later.</p>
+          <p>This feature is available in Contao <strong style="color: #f47c00;">4.10</strong> and later.</p>
+          <p>This feature is available in Contao <strong style="color: #f47c00;">4.12</strong> and later.</p>
+          <p>This feature is available in Contao <strong style="color: #f47c00;">5.0</strong> and later.</p>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Jetzt aber!</h3>
+          <pre class="stretch"><code class="php" style="font-size: 18px">
+class GoogleMapsAccessVoter extends AbstractDataContainerVoter
+{
+    public function __construct(private readonly AccessDecisionManagerInterface $accessDecisionManager)
+            {}
+
+    protected function getTable(): string
+    {
+        return 'tl_dlh_googlemaps';
+    }
+
+    protected function hasAccess(TokenInterface $token, CreateAction|DeleteAction|ReadAction|UpdateAction $action): bool
+    {
+        if (!$this->accessDecisionManager->decide($token, [ContaoCorePermissions::USER_CAN_ACCESS_MODULE . '.dlh_googlemaps'])) {
+            return false;
+        }
+
+        return match (true) {
+            $action instanceof CreateAction => $this->accessDecisionManager->decide($token, ['contao_user.dlh_googlemapsp'], 'create'),
+            $action instanceof ReadAction,
+            $action instanceof UpdateAction => $this->accessDecisionManager->decide($token, ['contao_user.dlh_googlemapss'], (int) $action->getCurrentId()),
+            $action instanceof DeleteAction => $this->accessDecisionManager->decide($token, ['contao_user.dlh_googlemapss'], (int) $action->getCurrentId())
+                && $this->accessDecisionManager->decide($token, ['contao_user.dlh_googlemapsp'], 'delete'),
+        };
+    }
+}
+          </code></pre>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Permissions mit CRUD erledigt</h3>
+          <p>Jetzt erstmal löschen!</p>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); align-items: center;">
+            <img src="images/permissions/overview.png" alt="Setting permissions in the group" style="width: 100%">
+            <img src="images/permissions/editor_view.png" alt="Overview of operations for a record" style="width: 100%">
+          </div>
+          <aside class="notes">
+            <ul>
+              <li>Hinweis, muss man immer selber programmieren</li>
+              <li>Ah, die Button Callbacks fehlen noch ... Man darf es ja nicht erlauben</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Oh... Forbidden</h3>
+          <p>Es fehlen die Button-Callbacks ...</p>
+          <img src="images/permissions/forbidden.png" alt="Forbidden" style="width: 100%">
+        </section>
+
+        <section data-transition="fade">
+          <h3>Dafür gibt es jetzt den OperationsBuilder</h3>
+          <img src="images/permissions/operations_builder.png" alt="Diff of deleting operations and using the operations builder" style="width: 100%">
+        </section>
+
+        <section data-transition="fade">
+          <pre class="stretch"><code class="php" style="font-size: 18px">
+    'label' => [
+        'fields' => ['title'],
+        'format' => '%s',
+        'label_callback' => ['tl_dlh_googlemaps', 'listRecords'],
+    ],
+    'global_operations' => [
+        'all',
+    ],
+    'operations' => [
+        'edit',
+        'children',
+        'copy',
+        'delete',
+        'show',
+    ],
+],
+          </code></pre>
+          <p>* Seit Contao 5.5 kann man die dies für Defaults sogar weglassen</p>
+        </section>
+
+        <section data-transition="fade">
+          <p>Kaum löscht man paar Zeilen</p>
+          <img src="images/permissions/permissions_correct.png" alt="Operations with greyed out permissions" style="width: 100%">
+        </section>
+
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+      <section id="events_not_hooks" data-transition="fade">
+
+        <section data-transition="fade">
+          <h2>Events statt Hooks!</h2>
+          <aside class="notes">
+            <ul>
+              <li>Was bringt Contao mit?</li>
+              <li>Warum auf Voter setzen?</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Aber warum?</h3>
+          <ul>
+            <li>Hooks greifen auf Globals zu (deprecated)</li>
+            <li>... ich, Ich, ICH! ICH MUSS ZUERST! (Priority)</li>
+            <li>Events kannst du decoraten!</li>
+            <li>Events sind Objekte</li>
+          </ul>
+          <aside class="notes">
+            <ul>
+              <li>Priority bestimmt die Ladereihenfolge - Höchste zuerst</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Als Hook</h3>
+          <pre class=""><code class="php" style="font-size: 18px">
+if (isset($GLOBALS['TL_HOOKS']['stylepicker4ward_getFilter']) && is_array($GLOBALS['TL_HOOKS']['stylepicker4ward_getFilter'])) {
+    foreach ($GLOBALS['TL_HOOKS']['stylepicker4ward_getFilter'] as $callback) {
+        System::importStatic($callback[0]);
+        $result = $this->{$callback[0]}->{$callback[1]}($table, $id);
+        if (is_array($result)) {
+            [$table, $layout, $section, $condition] = $result;
+            break;
+        }
+    }
+}
+          </code></pre>
+          <aside class="notes">
+            <ul>
+              <li>Ob es ein Pointer, also ein Zeiger ist, das muss man im Hook selber implementieren</li>
+              <li>Man kann Mist hereinschreiben</li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Als Event</h3>
+          <pre class=""><code class="php" style="font-size: 18px">
+$event = new GetStylePickerFilterEvent($table, (int) $id);
+$this->eventDispatcher->dispatch($event);
+
+$layout = $event->getLayout();
+$section = $event->getSection();
+$condition = $event->getCondition();
+          </code></pre>
+          <aside class="notes">
+            <ul>
+              <li>Events sind Objekte</li>
+              <li>Referenzen oder Pointer nicht notwendig, du modifizierst das Objekt</li>
+              <li></li>
+            </ul>
+          </aside>
+        </section>
+
+        <section data-transition="fade">
+          <h3>Und darauf kannst du hören (EventListener)</h3>
+          <pre class="stretch"><code class="php" style="font-size: 18px">
+#[AsEventListener]
+class StylePickerEventListener
+{
+    public function __invoke(GetStylePickerFilterEvent $event): void
+    {
+        if ($event->getTable() !== 'my_table') {
+            return;
+        }
+
+        $event->setLayout(213);
+        $event->setCondition('foobar');
+        $event->setSection('your_section');
+    }
+}
+          </code></pre>
+          <aside class="notes">
+            <ul>
+              <li>Das Attribut kann auch auf der Methode angewandt werden (MultiListener)</li>
+            </ul>
+          </aside>
+        </section>
+      </section>
+
+      <!-- ------------------------------------------------------------------------------------------------------- -->
+
+      <section id="rector_and_more" data-transition="fade">
+
         <section data-transition="fade">
           <h2>Rector (und andere Tools)</h2>
           <aside class="notes">
@@ -417,10 +892,6 @@ services:
               <li>Nutzung von ECS und Rector</li>
             </ul>
           </aside>
-        </section>
-
-        <section data-transition="fade">
-          <h3>Vorbereitungen</h3>
         </section>
 
         <section data-transition="fade">
@@ -481,6 +952,7 @@ foreach ($tokens as $token) {
           </code></pre>
 
         </section>
+
         <section data-transition="fade">
                     <pre><code>
 T_OPEN_TAG
@@ -494,6 +966,7 @@ T_STRING
 T_LNUMBER
           </code></pre>
         </section>
+
         <section data-transition="fade">
 
           <h4>Static analyzers</h4>
@@ -518,7 +991,6 @@ PhpParser\Node\Stmt\Return_
         </section>
 
         <section data-transition="fade">
-
           <h4>Instant Upgrade Tools</h4>
           <p>RectorPHP</p>
         </section>
@@ -533,7 +1005,6 @@ class Foo extends \Controller
     }
 }
           </code></pre>
-
         </section>
 
         <section data-transition="fade">
@@ -578,12 +1049,30 @@ return RectorConfig::configure()
           </code></pre>
         </section>
 
-      </section>
+        </section>
 
-      <!-- ------------------------------------------------------------------------------------------------------- -->
+        <!-- ------------------------------------------------------------------------------------------------------- -->
 
+        <section id="write-rector-rules" data-transition="fade">
+          <h2>Rector Regeln schreiben (optional)</h2>
+          <p>Note to yourself, open the IDE</p>
+        </section>
 
+        <!-- ------------------------------------------------------------------------------------------------------- -->
 
+        <section id="ending" data-transition="fade">
+          <h2>Fragerunde</h2>
+        </section>
+
+        <!-- ------------------------------------------------------------------------------------------------------- -->
+
+        <section id="thank-you" data-transition="fade">
+          <h2>Danke fürs Zuhören!</h2>
+        </section>
+
+        <!-- ------------------------------------------------------------------------------------------------------- -->
+
+    </div>
     </div>
 
 		<script src="dist/reveal.js"></script>
