@@ -408,6 +408,11 @@ class ModuleNewsReader extends ModuleNews
             <img src="images/waiting.webp" alt="Person waiting" style="width: 100%">
             <img src="images/rector-change.png" alt="Rector console" style="width: 100%">
           </div>
+          <aside class="notes">
+            <ul>
+                <li>Rector ist ein Refactor Tool, was automatisiert - Komme ich später zu</li>
+            </ul>
+        </aside>
         </section>
 
         <section data-transition="fade">
@@ -556,6 +561,7 @@ class StylePickerController extends AbstractBackendController
           <aside class="notes">
             <ul>
               <li>Der Service ist austauschbar</li>
+                <li>Erklären!</li>
             </ul>
           </aside>
         </section>
@@ -1140,7 +1146,7 @@ T_LNUMBER
 
           <h4>Static analyzers</h4>
           <p>Basierend auf dem AST (Abstract Syntax Tree) -> Seit PHP 7</p>
-          <p>Geparsed über PHPStan <br><sup>(by Nikita Popov / nikic)</sup></p>
+          <p>Geparsed über PHPParser <br><sup>(by Nikita Popov / nikic)</sup></p>
 
           <pre><code class="php">
             return $this->foo && self::bar();```
